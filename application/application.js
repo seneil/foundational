@@ -1,7 +1,9 @@
 import React from 'react';
 
 const Application = () => (
-  <div>React app</div>
+  <div>
+    <h1>Link Keeper</h1>
+  </div>
 );
 
 export default Application;
