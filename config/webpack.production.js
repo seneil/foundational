@@ -1,6 +1,6 @@
 const path = require('path');
-const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 const root = path.join(__dirname, '../');
 const application = path.join(root, 'application');
@@ -10,9 +10,6 @@ module.exports = () => {
     context: application,
     entry: {
       application: [
-        'react-hot-loader/patch',
-        'webpack-dev-server/client?http://localhost:3000',
-        'webpack/hot/only-dev-server',
         path.join(root, 'application/index'),
       ],
     },
@@ -37,7 +34,6 @@ module.exports = () => {
           options: {
             presets: [['env', { modules: false }], 'react'],
             plugins: [
-              'react-hot-loader/babel',
               'transform-object-rest-spread',
             ],
           },
@@ -47,7 +43,7 @@ module.exports = () => {
   };
 
   config.plugins = [
-    new webpack.HotModuleReplacementPlugin(),
+    new UglifyJSPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['application'],
@@ -56,23 +52,6 @@ module.exports = () => {
       template: path.join(application, 'view/index.html'),
     }),
   ];
-
-  config.devServer = {
-    contentBase: application,
-    clientLogLevel: 'info',
-    historyApiFallback: true,
-    hot: true,
-    compress: true,
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001/api/v1',
-        pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
-  };
 
   return config;
 };

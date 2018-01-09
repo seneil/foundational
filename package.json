@@ -5,7 +5,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "build": "webpack --config ./config/webpack.config.js -p",
+    "build": "webpack --config ./config/webpack.production.js -p",
     "dev": "webpack-dev-server --config ./config/webpack.config.js",
     "lint": "eslint --cache -c .eslintrc --ext .jsx,.js application config",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -52,6 +52,7 @@
     "redux": "3.7.2",
     "redux-actions": "2.2.1",
     "redux-thunk": "2.2.0",
+    "uglifyjs-webpack-plugin": "1.1.6",
     "webpack": "3.10.0"
   },
   "devDependencies": {
