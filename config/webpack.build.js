@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const root = path.join(__dirname, '../');
@@ -9,6 +10,9 @@ module.exports = () => {
     context: application,
     entry: {
       application: [
+        'react-hot-loader/patch',
+        'webpack-dev-server/client?http://localhost:3000',
+        'webpack/hot/only-dev-server',
         path.join(root, 'application/index'),
       ],
     },
@@ -32,6 +36,7 @@ module.exports = () => {
           loader: 'babel-loader',
           options: {
             presets: [['env', { modules: false }], 'react'],
+            plugins: ['react-hot-loader/babel'],
           },
         }],
       },
@@ -39,6 +44,7 @@ module.exports = () => {
   };
 
   config.plugins = [
+    new webpack.HotModuleReplacementPlugin(),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       chunks: ['application'],
@@ -52,7 +58,7 @@ module.exports = () => {
     contentBase: application,
     clientLogLevel: 'info',
     historyApiFallback: true,
-    hot: false,
+    hot: true,
     compress: true,
     port: 3000,
     proxy: {
