@@ -1,0 +1,31 @@
+{
+  "name": "foundational",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seneil/foundational.git"
+  },
+  "keywords": [
+    "react",
+    "jsx"
+  ],
+  "author": {
+    "name": "Dmitry Shvalyov",
+    "url": "http://shvalyov.ru"
+  },
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/seneil/foundational/issues"
+  },
+  "homepage": "https://github.com/seneil/foundational#readme"
+}
