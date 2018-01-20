@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CleanWebpackPlugin = require('clean-webpack-plugin');
 const WebpackPwaManifest = require('webpack-pwa-manifest');
+const OfflinePlugin = require('offline-plugin');
 
 const root = path.join(__dirname, '../');
 const application = path.join(root, 'application');
@@ -74,6 +75,29 @@ module.exports = () => {
         src: path.resolve('application/view/images/large-iconlarge.png'),
         sizes: [1024],
       }],
+    }),
+    new OfflinePlugin({
+      publicPath: '/',
+      safeToUseOptionalCaches: true,
+      caches: {
+        main: [
+          'application.bundle.js',
+          'icon_*.png',
+          'manifest.*.json',
+        ],
+        additional: [
+          ':externals:',
+        ],
+        optional: [
+          ':rest:',
+        ],
+      },
+      externals: [
+        '/',
+      ],
+      ServiceWorker: {
+        events: true,
+      },
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',

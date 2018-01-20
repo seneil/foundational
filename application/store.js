@@ -1,17 +1,24 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
+import { offline } from '@redux-offline/redux-offline';
+import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
 
 import thunk from 'redux-thunk';
 
 import applicationReducer from './reducers';
 
+const enhancers = [
+  applyMiddleware(thunk),
+  offline(offlineConfig),
+];
+
 /* eslint-disable no-underscore-dangle */
-const enhancers = window.__REDUX_DEVTOOLS_EXTENSION__
-  ? compose(applyMiddleware(thunk), window.__REDUX_DEVTOOLS_EXTENSION__())
-  : applyMiddleware(thunk);
+if (window.__REDUX_DEVTOOLS_EXTENSION__) {
+  enhancers.push(window.__REDUX_DEVTOOLS_EXTENSION__());
+}
 /* eslint-enable no-underscore-dangle */
 
 const store = createStore(combineReducers({
   application: applicationReducer,
-}), {}, enhancers);
+}), {}, compose(...enhancers));
 
 export default store;
