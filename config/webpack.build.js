@@ -1,9 +1,13 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
-const OfflinePlugin = require('offline-plugin');
+
+const offlinePlugin = require('./assets/plugins/offlinePlugin');
+const webpackPwaManifest = require('./assets/plugins/webpackPwaManifest');
+const htmlWebpackPlugin = require('./assets/plugins/htmlWebpackPlugin');
+const cleanWebpackPlugin = require('./assets/plugins/cleanWebpackPlugin');
+
+const ruleJs = require('./assets/rules/js');
+const devServer = require('./assets/config/devServer');
 
 const root = path.join(__dirname, '../');
 const application = path.join(root, 'application');
@@ -32,100 +36,17 @@ module.exports = () => {
     },
   };
 
-  config.module = {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: [/node_modules(?!\/webpack-dev-server)/, /public/],
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [['env', { modules: false }], 'react'],
-            plugins: [
-              'react-hot-loader/babel',
-              'transform-object-rest-spread',
-              ['babel-plugin-styled-components', {
-                preprocess: true,
-              }],
-            ],
-          },
-        }],
-      },
-    ],
-  };
+  config.module = { rules: [ruleJs()] };
 
   config.plugins = [
     new webpack.HotModuleReplacementPlugin(),
-    new CleanWebpackPlugin(output, {
-      verbose: true,
-      allowExternal: true,
-    }),
-    new WebpackPwaManifest({
-      name: 'Link Keeper',
-      short_name: 'Link Keeper',
-      orientation: 'portrait',
-      display: 'standalone',
-      start_url: '/',
-      theme_color: '#ffffff',
-      background_color: '#80cbc4',
-      icons: [{
-        src: path.resolve('application/view/images/icon.png'),
-        sizes: [192, 256],
-      }, {
-        src: path.resolve('application/view/images/large-iconlarge.png'),
-        sizes: [1024],
-      }],
-    }),
-    new OfflinePlugin({
-      publicPath: '/',
-      safeToUseOptionalCaches: true,
-      caches: {
-        main: [
-          'application.bundle.js',
-          'icon_*.png',
-          'manifest.*.json',
-        ],
-        additional: [
-          ':externals:',
-        ],
-        optional: [
-          ':rest:',
-        ],
-      },
-      externals: [
-        '/',
-      ],
-      ServiceWorker: {
-        events: true,
-      },
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      chunks: ['application'],
-      inject: true,
-      favicon: path.join(view, 'favicon.ico'),
-      title: 'Link Keeper',
-      template: path.join(view, 'index.html'),
-    }),
+    cleanWebpackPlugin({ output }),
+    webpackPwaManifest(),
+    offlinePlugin(),
+    htmlWebpackPlugin({ view }),
   ];
 
-  config.devServer = {
-    contentBase: application,
-    clientLogLevel: 'info',
-    historyApiFallback: true,
-    hot: true,
-    compress: true,
-    host: '0.0.0.0',
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001/api/v1',
-        pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
-  };
+  config.devServer = devServer({ application });
 
   return config;
 };

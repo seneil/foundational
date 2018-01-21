@@ -1,8 +1,12 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const WebpackPwaManifest = require('webpack-pwa-manifest');
+
+const offlinePlugin = require('./assets/plugins/offlinePlugin');
+const uglifyJSPlugin = require('./assets/plugins/uglifyJSPlugin');
+const webpackPwaManifest = require('./assets/plugins/webpackPwaManifest');
+const htmlWebpackPlugin = require('./assets/plugins/htmlWebpackPlugin');
+const cleanWebpackPlugin = require('./assets/plugins/cleanWebpackPlugin');
+
+const ruleJs = require('./assets/rules/js');
 
 const root = path.join(__dirname, '../');
 const application = path.join(root, 'application');
@@ -28,55 +32,14 @@ module.exports = () => {
     },
   };
 
-  config.module = {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: [/node_modules(?!\/webpack-dev-server)/, /public/],
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [['env', { modules: false }], 'react'],
-            plugins: [
-              'transform-object-rest-spread',
-              ['babel-plugin-styled-components', {
-                preprocess: true,
-              }],
-            ],
-          },
-        }],
-      },
-    ],
-  };
+  config.module = { rules: [ruleJs()] };
 
   config.plugins = [
-    new UglifyJSPlugin(),
-    new CleanWebpackPlugin(output, {
-      verbose: true,
-      allowExternal: true,
-    }),
-    new WebpackPwaManifest({
-      name: 'Link Keeper',
-      short_name: 'Link Keeper',
-      orientation: 'portrait',
-      display: 'standalone',
-      start_url: '/',
-      background_color: '#80cbc4',
-      icons: [{
-        src: path.resolve('application/view/images/icon.png'),
-        sizes: [192, 256],
-      }, {
-        src: path.resolve('application/view/images/large-iconlarge.png'),
-        sizes: [1024],
-      }],
-    }),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      chunks: ['application'],
-      inject: true,
-      title: 'Link Keeper',
-      template: path.join(view, 'index.html'),
-    }),
+    uglifyJSPlugin(),
+    cleanWebpackPlugin({ output }),
+    webpackPwaManifest(),
+    offlinePlugin(),
+    htmlWebpackPlugin({ view }),
   ];
 
   return config;
