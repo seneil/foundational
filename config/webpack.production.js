@@ -5,6 +5,7 @@ const uglifyJSPlugin = require('./assets/plugins/uglifyJSPlugin');
 const webpackPwaManifest = require('./assets/plugins/webpackPwaManifest');
 const htmlWebpackPlugin = require('./assets/plugins/htmlWebpackPlugin');
 const cleanWebpackPlugin = require('./assets/plugins/cleanWebpackPlugin');
+const faviconsWebpackPlugin = require('./assets/plugins/faviconsWebpackPlugin');
 
 const ruleJs = require('./assets/rules/js');
 
@@ -40,6 +41,7 @@ module.exports = () => {
     webpackPwaManifest(),
     offlinePlugin(),
     htmlWebpackPlugin({ view }),
+    faviconsWebpackPlugin(),
   ];
 
   return config;
