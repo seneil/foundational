@@ -1,9 +1,19 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const offlinePlugin = require('./assets/plugins/offlinePlugin');
+const webpackPwaManifest = require('./assets/plugins/webpackPwaManifest');
+const htmlWebpackPlugin = require('./assets/plugins/htmlWebpackPlugin');
+const cleanWebpackPlugin = require('./assets/plugins/cleanWebpackPlugin');
+const faviconsWebpackPlugin = require('./assets/plugins/faviconsWebpackPlugin');
+
+const ruleJs = require('./assets/rules/js');
+const devServer = require('./assets/config/devServer');
 
 const root = path.join(__dirname, '../');
 const application = path.join(root, 'application');
+const output = path.join(root, 'public');
+const view = path.join(application, 'view');
 
 module.exports = () => {
   const config = {
@@ -22,57 +32,23 @@ module.exports = () => {
       },
     },
     output: {
-      path: path.join(root, 'public'),
+      path: output,
       filename: '[name].bundle.js',
     },
   };
 
-  config.module = {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: [/node_modules(?!\/webpack-dev-server)/, /public/],
-        use: [{
-          loader: 'babel-loader',
-          options: {
-            presets: [['env', { modules: false }], 'react'],
-            plugins: [
-              'react-hot-loader/babel',
-              'transform-object-rest-spread',
-            ],
-          },
-        }],
-      },
-    ],
-  };
+  config.module = { rules: [ruleJs()] };
 
   config.plugins = [
     new webpack.HotModuleReplacementPlugin(),
-    new HtmlWebpackPlugin({
-      filename: 'index.html',
-      chunks: ['application'],
-      inject: true,
-      title: 'Link Keeper',
-      template: path.join(application, 'view/index.html'),
-    }),
+    cleanWebpackPlugin({ output }),
+    webpackPwaManifest(),
+    offlinePlugin(),
+    htmlWebpackPlugin({ view }),
+    faviconsWebpackPlugin(),
   ];
 
-  config.devServer = {
-    contentBase: application,
-    clientLogLevel: 'info',
-    historyApiFallback: true,
-    hot: true,
-    compress: true,
-    port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:3001/api/v1',
-        pathRewrite: {
-          '^/api': '',
-        },
-      },
-    },
-  };
+  config.devServer = devServer({ application });
 
   return config;
 };
