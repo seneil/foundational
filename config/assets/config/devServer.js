@@ -1,3 +1,7 @@
+const config = require('config');
+
+const { endpoint } = config.get('api');
+
 module.exports = params => ({
   contentBase: params.application,
   clientLogLevel: 'info',
@@ -8,7 +12,7 @@ module.exports = params => ({
   port: 3000,
   proxy: {
     '/api': {
-      target: 'http://localhost:3001/api/v1',
+      target: `${endpoint}/v1`,
       pathRewrite: {
         '^/api': '',
       },
