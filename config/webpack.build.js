@@ -6,6 +6,7 @@ const webpackPwaManifest = require('./assets/plugins/webpackPwaManifest');
 const htmlWebpackPlugin = require('./assets/plugins/htmlWebpackPlugin');
 const cleanWebpackPlugin = require('./assets/plugins/cleanWebpackPlugin');
 const faviconsWebpackPlugin = require('./assets/plugins/faviconsWebpackPlugin');
+const definePlugin = require('./assets/plugins/definePlugin');
 
 const ruleJs = require('./assets/rules/js');
 const devServer = require('./assets/config/devServer');
@@ -46,6 +47,7 @@ module.exports = () => {
     offlinePlugin(),
     htmlWebpackPlugin({ view }),
     faviconsWebpackPlugin(),
+    definePlugin(),
   ];
 
   config.devServer = devServer({ application });
