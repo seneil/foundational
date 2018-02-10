@@ -1,9 +1,8 @@
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { offline } from '@redux-offline/redux-offline';
-import offlineConfig from '@redux-offline/redux-offline/lib/defaults';
-
 import thunk from 'redux-thunk';
 
+import offlineConfig from 'application/common/services/offline-config';
 import applicationReducer from './reducers';
 
 const enhancers = [
