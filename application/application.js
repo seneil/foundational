@@ -1,26 +1,15 @@
 import React from 'react';
 import { Provider } from 'react-redux';
+import { Router, browserHistory } from 'react-router';
 
-import styled from 'styled-components';
-
-import store from './store';
-
-const Wrapper = styled.section`
-  padding: 4em;
-  background: papayawhip;
-`;
-
-const Title = styled.h1`
-  font-size: 1.5em;
-  text-align: center;
-  color: palevioletred;
-`;
+import routes from 'application/routes';
+import store from 'application/store';
 
 const Application = () => (
   <Provider store={store}>
-    <Wrapper>
-      <Title>Link Keeper</Title>
-    </Wrapper>
+    <Router history={browserHistory}>
+      {routes}
+    </Router>
   </Provider>
 );
 
